@@ -1,0 +1,35 @@
+name: Lint with RuboCop
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  rubocop:
+    name: Lint with RuboCop
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:3.2.2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          apt-get update -qy
+          apt-get install -y nodejs
+          gem install bundler
+          bundle install --jobs $(nproc) --retry 3
+
+      - name: Run RuboCop
+        run: bundle exec rubocop
+
+      - name: Save Lint result as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rubocop-result
+          path: ./rubocop-result.json

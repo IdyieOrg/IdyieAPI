@@ -1,0 +1,31 @@
+name: Tests avec RSpec
+
+on:
+  workflow_run:
+    workflows: ["Build Docker Images"]  # Workflow triggered after the `build.yml` workflow
+    types:
+      - completed
+
+jobs:
+  rspec:
+    name: Run RSpec tests
+    runs-on: ubuntu-latest
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Docker Compose
+        run: docker compose up -d
+
+      - name: Wait for MariaDB
+        run: docker compose exec mariadb mariadb-admin --silent --wait=30 -uroot -ppassword ping || exit 1
+
+      - name: Run DB Migrations
+        run: docker compose exec application rails db:create db:migrate
+
+      - name: Run RSpec
+        run: docker compose exec application bundle exec rspec
