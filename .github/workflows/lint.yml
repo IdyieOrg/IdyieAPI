@@ -27,9 +27,3 @@ jobs:
 
       - name: Run RuboCop
         run: bundle exec rubocop
-
-      - name: Save Lint result as an artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: rubocop-result
-          path: ./rubocop-result.json

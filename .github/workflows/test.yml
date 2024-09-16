@@ -1,4 +1,4 @@
-name: Tests avec RSpec
+name: Tests with RSpec
 
 on:
   workflow_run:
