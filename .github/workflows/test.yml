@@ -24,6 +24,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Create Docker network
+        run: docker network create idyie-network || true  # Crée le réseau s'il n'existe pas
+
       - name: Setup Docker Compose
         run: docker compose up -d
 
