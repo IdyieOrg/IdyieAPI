@@ -1,0 +1,5 @@
+FROM mariadb:11.2.3
+
+COPY ./docker/mariadb/init.sql /docker-entrypoint-initdb.d/init.sql
+
+WORKDIR /app

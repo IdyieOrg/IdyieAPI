@@ -45,6 +45,8 @@ group :development do
   # gem "spring"
 end
 
+gem 'httparty'
+
 gem 'overcommit', require: false
 
 gem 'rubocop', require: false

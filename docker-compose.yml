@@ -2,19 +2,25 @@ services:
   application:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/Dockerfile.application
     container_name: idyie-api-application
     environment:
+      IDYIE_FORMATTER_URL: $IDYIE_FORMATTER_URL
+      IDYIE_LLM_URL: $IDYIE_LLM_URL
       PORT: $PORT
     networks:
       - idyie-network
     ports:
       - "$PORT:$PORT"
+    stdin_open: true
+    tty: true
     volumes:
       - .:/app
 
   mariadb:
-    image: mariadb:11.2.3
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.mariadb
     container_name: idyie-api-mariadb
     environment:
       MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
