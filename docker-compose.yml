@@ -4,40 +4,37 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile.application
     container_name: idyie-api-application
-    environment:
-      IDYIE_FORMATTER_URL: $IDYIE_FORMATTER_URL
-      IDYIE_LLM_URL: $IDYIE_LLM_URL
-      PORT: $PORT
+    env_file: .env
     networks:
       - idyie-network
     ports:
-      - "$PORT:$PORT"
-    stdin_open: true
-    tty: true
+      - "${PORT}:${PORT}"
     volumes:
       - .:/app
+    depends_on:
+      - mariadb
 
   mariadb:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.mariadb
     container_name: idyie-api-mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-      MYSQL_USER: $MYSQL_USER
-      MYSQL_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DATABASE
+    env_file: .env
     networks:
       - idyie-network
+    ports:
+      - "3307:3306"
     volumes:
       - idyie-api-mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
-  default:
-    driver: bridge
   idyie-network:
     external: true
-    name: idyie-network
 
 volumes:
   idyie-api-mariadb:

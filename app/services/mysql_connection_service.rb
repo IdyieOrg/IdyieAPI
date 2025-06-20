@@ -1,5 +1,7 @@
+require 'mysql2'
+
 class MysqlConnectionService
-  def initialize(host, port, database, username, password)
+  def initialize(host:, port:, database:, username:, password:)
     @host = host
     @port = port
     @database = database
@@ -7,74 +9,56 @@ class MysqlConnectionService
     @password = password
   end
 
-  def fetch_data(query) # rubocop:disable Metrics/MethodLength
-    results = nil
-    begin
-      Rails.logger.info 'Fetching data'
-
-      # Define connection information
-      db_config = {
-        adapter: 'mysql2',
-        host: @host,
-        port: @port,
-        database: @database,
-        username: @username,
-        password: @password
-      }
-
-      # Establish connection to the database
-      ActiveRecord::Base.establish_connection(db_config)
-
-      # Execute the query
-      results = ActiveRecord::Base.connection.execute(query)
-      columns = results.fields
-    rescue StandardError => e
-      Rails.logger.error e.message
-    ensure
-      ActiveRecord::Base.connection.close
-    end
-
-    { columns:, results: }
-  end
-
   def fetch_schema # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
-    db_config = {
-      adapter: 'mysql2',
-      host: @host,
-      port: @port,
-      database: @database,
-      username: @username,
-      password: @password
-    }
+    schema_data = ''
 
-    begin
-      ActiveRecord::Base.establish_connection(db_config)
-
-      # Get all tables
-      tables = ActiveRecord::Base.connection.tables
+    with_connection do |client|
+      tables = client.query('SHOW TABLES').map { |row| row.values.first }
       tables.reject! { |table| %w[schema_migrations ar_internal_metadata].include?(table) }
-      schema_data = ''
 
       tables.each do |table|
-        # Get table creation SQL
-        table_info = ActiveRecord::Base.connection.execute("SHOW CREATE TABLE #{table}").first
-        create_table_sql = table_info[1]
-
-        # Clean up the SQL to match desired format
-        formatted_sql = create_table_sql.split("\n")
-                                        .map(&:strip)
-                                        .reject(&:empty?)
-                                        .join("\n")
-
-        schema_data += "#{formatted_sql}\n\n"
+        result = client.query("SHOW CREATE TABLE #{table}").first
+        create_table_sql = result.values[1] # second column has CREATE statement
+        schema_data += "#{create_table_sql}\n\n"
       end
-    rescue StandardError => e
-      Rails.logger.error e.message
-      nil
-    ensure
-      ActiveRecord::Base.connection.close
     end
 
+    Rails.logger.info "Schema data fetched: #{schema_data}"
     schema_data
+  rescue StandardError => e
+    Rails.logger.error "Error fetching schema: #{e.message}"
+    nil
+  end
+
+  def fetch_data(query) # rubocop:disable Metrics/MethodLength
+    results_data = []
+    columns = []
+
+    with_connection do |client|
+      results = client.query(query)
+      columns = results.fields
+      results.each do |row|
+        results_data << row
+      end
+    end
+
+    { columns:, results: results_data }
+  rescue StandardError => e
+    Rails.logger.error "Error fetching data: #{e.message}"
+    nil
+  end
+
+  private
+
+  def with_connection
+    client = Mysql2::Client.new(
+      host: @host,
+      port: @port,
+      username: @username,
+      password: @password,
+      database: @database
+    )
+    yield client
+    client.close
   end
 end
