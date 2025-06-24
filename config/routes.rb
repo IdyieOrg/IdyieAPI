@@ -7,13 +7,20 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :prompts, only: [:index]
+      namespace :auth do
+        resources :token, only: [] do
+          collection do
+            post :exchange
+          end
+        end
+      end
       resources :database, only: [] do
         collection do
           get :schema
           get :query
         end
       end
+      resources :prompts, only: [:index]
     end
   end
 end
