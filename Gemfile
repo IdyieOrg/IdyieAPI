@@ -47,6 +47,8 @@ end
 
 gem 'httparty'
 
+gem 'jwt'
+
 gem 'overcommit', require: false
 
 gem 'rubocop', require: false

@@ -29,7 +29,13 @@ class Api::V1::PromptsController < ApplicationController # rubocop:disable Metri
   def get_data(prompt)
     results = transform_prompt_to_query(prompt)
     query = results['sql_query']
-    MysqlConnectionService.new('mariadb', 3306, 'idyie_api_development', 'root', 'password').fetch_data(query)
+    MysqlConnectionService.new(
+      host: 'mariadb',
+      port: 3306,
+      database: 'idyie_api_development',
+      username: 'root',
+      password: 'password'
+    ).fetch_data(query)
   end
 
   def transform_data(data)

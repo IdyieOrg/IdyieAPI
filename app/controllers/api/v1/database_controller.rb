@@ -1,5 +1,6 @@
 class Api::V1::DatabaseController < ApplicationController
-  before_action :init_mysql_service
+  before_action :init_mysql_service, only: [:schema, :query]
+  skip_before_action :authorize_request, only: [:schema, :query]
 
   def schema
     schema = @mysql_service.fetch_schema
