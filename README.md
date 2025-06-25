@@ -6,7 +6,7 @@
 **IdyieAPI**
 
 ### Description
-API developed in Ruby on Rails for Idyie. The goal of this API is to communicate between the IdyieLLM and the IdyieFormatter.
+API developed in Ruby on Rails for Idyie. The goal of this API is to communicate between the IdyieWeb, the IdyieLLM and the IdyieFormatter.
 <!-- **Target audience**: Developers, DevOps, internal contributors.   -->
 
 ### Main technologies
@@ -30,7 +30,7 @@ API developed in Ruby on Rails for Idyie. The goal of this API is to communicate
 ### Used ports
 | Service     | Port |
 |-------------|------|
-| Rails (web) | 3000 |
+| Rails (web) | 8080 |
 | MariaDB     | 3306 |
 
 ## 3. 🚀 Installation & Launch
@@ -46,7 +46,7 @@ cp .env.example .env
 ```
 ### 3.3 Launch the application locally
 ```bash
-docker-compose build
+docker compose build
 docker compose up -d; docker attach idyie-api-application
 ```
 
@@ -105,19 +105,19 @@ rubocop: Ruby linter -->
 A ```.env.example``` file is provided to configure the required variables:
 ```bash
 # Application
-IDYIE_FORMATTER_URL=http://idyie-formatter-application:9091
-IDYIE_LLM_URL=http://idyie-llm-application:9090
-PORT=8080
+IDYIE_FORMATTER_URL=
+IDYIE_LLM_URL=
+PORT=
 
 # Database
-MYSQL_ROOT_PASSWORD=password
-MYSQL_USER=dev
-MYSQL_PASSWORD=password
-MYSQL_DATABASE=idyie_api_development
+MYSQL_ROOT_PASSWORD=
+MYSQL_USER=
+MYSQL_PASSWORD=
+MYSQL_DATABASE=
 ```
 The variables are used to configure the Docker containers and database connection.
 
-## 6. 🔁 API Documentation
+## 6. 🔁 API Documentation – IdyieAPI (v1)
 
 ### Endpoint `GET /api/v1/prompts`
 
@@ -155,6 +155,53 @@ This endpoint receives a natural language **prompt**, interprets it using an LLM
 }
 ```
 This occurs when the prompt parameter is missing or empty.
+
+
+### Endpoint `GET /api/v1/database/schema`
+
+### Description:
+Returns the schema of the database (tables and columns), usually for use in frontend visual builders or query assistants.
+
+### Response
+
+**Success Response (200 OK)**
+```json
+{
+  "tables": [
+    {
+      "name": string,  // Table name
+      "columns": [string]  // List of column names in the table
+    },
+    {
+      ...
+    }
+  ]
+}
+```
+
+### Endpoint `GET /api/v1/database/query`
+
+### Description:
+Executes a **raw or generated SQL query** against the database and returns the result set.
+
+### Query Parameters
+
+| Name    | Type   | Required | Description                                  |
+|---------|--------|----------|----------------------------------------------|
+| sql     | string | Yes      | SQL query to be executed                     |
+
+
+### Response
+
+**Success Response (200 OK)**
+```json
+{
+  "results": [
+    { "column1": "value1", "column2": "value2" }, // Example row
+    { "column1": "value3", "column2": "value4" } // Another row
+  ]
+}
+```
 
 ## 7. 🧪 Tests & Code Quality
 Tool used:
