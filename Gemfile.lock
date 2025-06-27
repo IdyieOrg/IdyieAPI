@@ -75,6 +75,8 @@ GEM
       minitest (>= 5.1)
       mutex_m
       tzinfo (~> 2.0)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
     base64 (0.2.0)
     bigdecimal (3.1.8)
@@ -88,6 +90,7 @@ GEM
     crass (1.0.6)
     csv (3.3.2)
     date (3.3.4)
+    diff-lcs (1.6.2)
     drb (2.2.1)
     erubi (1.13.0)
     globalid (1.2.1)
@@ -104,6 +107,9 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.7.2)
+    json-schema (5.1.1)
+      addressable (~> 2.8)
+      bigdecimal (~> 3.1)
     jwt (3.0.0)
       base64
     language_server-protocol (3.17.0.3)
@@ -117,7 +123,6 @@ GEM
       net-smtp
     marcel (1.0.4)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.7)
     minitest (5.24.0)
     msgpack (1.7.2)
     multi_xml (0.7.1)
@@ -134,12 +139,7 @@ GEM
     net-smtp (0.5.0)
       net-protocol
     nio4r (2.7.3)
-    nokogiri (1.16.6)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.16.6-aarch64-linux)
-      racc (~> 1.4)
-    nokogiri (1.16.6-x86_64-linux)
       racc (~> 1.4)
     overcommit (0.63.0)
       childprocess (>= 0.6.3, < 6)
@@ -151,6 +151,7 @@ GEM
       racc
     psych (5.1.2)
       stringio
+    public_suffix (6.0.2)
     puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.8.0)
@@ -202,6 +203,38 @@ GEM
       io-console (~> 0.5)
     rexml (3.3.1)
       strscan
+    rspec-core (3.13.5)
+      rspec-support (~> 3.13.0)
+    rspec-expectations (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-mocks (3.13.5)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.13.0)
+    rspec-rails (7.1.1)
+      actionpack (>= 7.0)
+      activesupport (>= 7.0)
+      railties (>= 7.0)
+      rspec-core (~> 3.13)
+      rspec-expectations (~> 3.13)
+      rspec-mocks (~> 3.13)
+      rspec-support (~> 3.13)
+    rspec-support (3.13.4)
+    rswag (2.16.0)
+      rswag-api (= 2.16.0)
+      rswag-specs (= 2.16.0)
+      rswag-ui (= 2.16.0)
+    rswag-api (2.16.0)
+      activesupport (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
+    rswag-specs (2.16.0)
+      activesupport (>= 5.2, < 8.1)
+      json-schema (>= 2.2, < 6.0)
+      railties (>= 5.2, < 8.1)
+      rspec-core (>= 2.14)
+    rswag-ui (2.16.0)
+      actionpack (>= 5.2, < 8.1)
+      railties (>= 5.2, < 8.1)
     rubocop (1.64.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -238,8 +271,6 @@ GEM
 
 PLATFORMS
   aarch64-linux
-  ruby
-  x86_64-linux
 
 DEPENDENCIES
   bootsnap
@@ -251,6 +282,8 @@ DEPENDENCIES
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.2)
+  rspec-rails
+  rswag
   rubocop
   rubocop-rails
   rubocop-rspec

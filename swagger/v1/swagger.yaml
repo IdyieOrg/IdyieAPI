@@ -1,0 +1,61 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/v1/database/schema":
+    get:
+      summary: Récupère le schéma de la base de données
+      tags:
+      - Database
+      responses:
+        '200':
+          description: Schéma récupéré avec succès
+  "/api/v1/database/query":
+    get:
+      summary: Exécute une requête SQL brute et retourne les résultats
+      tags:
+      - Database
+      parameters:
+      - name: query
+        in: query
+        required: true
+        description: Requête SQL à exécuter
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Résultat de la requête retourné
+        '400':
+          description: Paramètre query manquant
+        '500':
+          description: Erreur lors de l'exécution de la requête
+  "/api/v1/prompts":
+    get:
+      summary: Interprète un prompt et retourne des données
+      tags:
+      - Prompts
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        description: Token JWT sous la forme Bearer <token>
+        schema:
+          type: string
+      - name: prompt
+        in: query
+        required: true
+        description: Instruction en langage naturel
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Prompt traité avec succès
+        '400':
+          description: Prompt manquant
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
