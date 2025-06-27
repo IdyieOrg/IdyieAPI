@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'API V1 Database', type: :request do
+RSpec.describe 'API V1 Database', type: :request do # rubocop:disable RSpec/EmptyExampleGroup
   path '/api/v1/database/schema' do
     get 'Récupère le schéma de la base de données' do
       tags 'Database'
