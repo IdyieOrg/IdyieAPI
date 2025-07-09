@@ -51,7 +51,7 @@ class Api::V1::PromptsController < ApplicationController
     return false unless normalized_query.start_with?('SELECT')
 
     forbidden_keywords = %w[INSERT UPDATE DELETE DROP ALTER TRUNCATE EXECUTE EXEC CALL]
-    !forbidden_keywords.any? { |kw| normalized_query.include?(kw) }
+    forbidden_keywords.none? { |kw| normalized_query.include?(kw) }
   end
 
   def transform_data(data)
