@@ -26,9 +26,14 @@ class Api::V1::PromptsController < ApplicationController
     JSON.parse(response.body)
   end
 
-  def get_data(prompt)
+  def get_data(prompt) # rubocop:disable Metrics/MethodLength
     results = transform_prompt_to_query(prompt)
     query = results['sql_query']
+
+    unless valid_select_query?(query)
+      raise ArgumentError, 'Invalid SQL query: Only SELECT statements are allowed'
+    end
+
     MysqlConnectionService.new(
       host: 'mariadb',
       port: 3306,
@@ -36,6 +41,11 @@ class Api::V1::PromptsController < ApplicationController
       username: 'root',
       password: 'password'
     ).fetch_data(query)
+  end
+
+  def valid_select_query?(query)
+    sanitized_query = query.strip.gsub(/\A(--.*\n|\s)*/m, '')
+    sanitized_query.upcase.start_with?('SELECT')
   end
 
   def transform_data(data)
