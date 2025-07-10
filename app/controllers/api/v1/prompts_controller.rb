@@ -44,8 +44,14 @@ class Api::V1::PromptsController < ApplicationController
   end
 
   def valid_select_query?(query)
-    sanitized_query = query.strip.gsub(/\A(--.*\n|\s)*/m, '')
-    sanitized_query.upcase.start_with?('SELECT')
+    return false if query.blank?
+
+    normalized_query = query.strip.gsub(/\s+/, ' ').upcase
+
+    return false unless normalized_query.start_with?('SELECT')
+
+    forbidden_keywords = %w[INSERT UPDATE DELETE DROP ALTER TRUNCATE EXECUTE EXEC CALL]
+    forbidden_keywords.none? { |kw| normalized_query.include?(kw) }
   end
 
   def transform_data(data)
