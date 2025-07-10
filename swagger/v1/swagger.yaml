@@ -6,54 +6,54 @@ info:
 paths:
   "/api/v1/database/schema":
     get:
-      summary: Récupère le schéma de la base de données
+      summary: Retrieves the database schema
       tags:
       - Database
       responses:
         '200':
-          description: Schéma récupéré avec succès
+          description: Schema successfully retrieved
   "/api/v1/database/query":
     get:
-      summary: Exécute une requête SQL brute et retourne les résultats
+      summary: Executes a raw SQL query and returns the results
       tags:
       - Database
       parameters:
       - name: query
         in: query
         required: true
-        description: Requête SQL à exécuter
+        description: SQL query to execute
         schema:
           type: string
       responses:
         '200':
-          description: Résultat de la requête retourné
+          description: Query result returned
         '400':
-          description: Paramètre query manquant
+          description: Missing query parameter
         '500':
-          description: Erreur lors de l'exécution de la requête
+          description: Error while executing the query
   "/api/v1/prompts":
     get:
-      summary: Interprète un prompt et retourne des données
+      summary: Interprets a prompt and returns data
       tags:
       - Prompts
       parameters:
       - name: Authorization
         in: header
         required: true
-        description: Token JWT sous la forme Bearer <token>
+        description: JWT token in the format Bearer <token>
         schema:
           type: string
       - name: prompt
         in: query
         required: true
-        description: Instruction en langage naturel
+        description: Instruction in natural language
         schema:
           type: string
       responses:
         '200':
-          description: Prompt traité avec succès
+          description: Prompt successfully processed
         '400':
-          description: Prompt manquant
+          description: Missing prompt
 servers:
 - url: https://{defaultHost}
   variables:
