@@ -37,3 +37,5 @@
 Gemfile.lock
 .rspec
 .ruby-version
+
+docker/mariadb/*.sql

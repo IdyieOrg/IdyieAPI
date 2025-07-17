@@ -1,5 +1,10 @@
-FROM mariadb:11.2.3
+FROM mariadb:latest
 
-COPY ./docker/mariadb/init.sql /docker-entrypoint-initdb.d/init.sql
+COPY ./docker/mariadb/*.sql /docker-entrypoint-initdb.d/
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y mariadb-client \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
